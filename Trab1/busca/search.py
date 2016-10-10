@@ -87,7 +87,31 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    raiz = problem.getStartState()
+    visitado = []
+    
+    def dfsProblemSolver(problem, raiz, visitado):
+        visitado.append(raiz)
+        caminho = []
+        caminho.append(raiz)
+
+        if problem.isGoalState(raiz): return raiz
+
+        filhoList = problem.getSuccessors(raiz)
+
+        for filho in filhoList:
+            if filho[0] in visitado: continue
+
+            retorno = dfsProblemSolver(problem, filho[0], visitado)
+
+            if retorno is not None:
+                caminho.append(retorno)
+                return caminho
+
+        return None
+
+    return dfsProblemSolver(problem, raiz, visitado)
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
