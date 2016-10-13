@@ -88,13 +88,6 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    e = Directions.EAST
-    n = Directions.NORTH
-    s = Directions.SOUTH
-    w = Directions.WEST
-
-    #return  [s, s, w, s, w, w, s, w]
 
     raiz = problem.getStartState()
 
@@ -125,24 +118,34 @@ def depthFirstSearch(problem):
 
         return None
 
-    retorno = dfsProblemSolver(problem, raiz, visitado, None)
-    
-    for x, i in enumerate(retorno):
-        if i == 'North':
-            retorno[x] = n
-        elif i == 'West':
-            retorno[x] = w
-        elif i == 'East':
-            retorno[x] = e
-        else:
-            retorno[x] = s
-
-    return retorno
+    return dfsProblemSolver(problem, raiz, visitado, None)
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    raiz = problem.getStartState()
+    pre = []
+    cor = []
+    distancia = []
+
+    fila = []
+
+    def bfsProblemSolver(problem, raiz):
+        fila.append(raiz)
+        cor.append((raiz, 'b'))
+        distancia.append((raiz, 0))
+        pre.append((raiz, None))
+
+        print cor
+
+        while fila:
+            atual = fila.pop(0)
+            for n, i in enumerate(cor):
+                if cor[n][0] == atual:
+                    cor[n] = (raiz, 'c')
+
+    bfsProblemSolver(problem, raiz)
 
 def iterativeDeepeningSearch(problem):
     """
