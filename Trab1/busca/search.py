@@ -107,23 +107,37 @@ def depthFirstSearch(problem):
         if directions is not None:
             caminho.append(directions)
 
-        if problem.isGoalState(raiz): 
-            return raiz
+        if problem.isGoalState(raiz):
+            caminho.append(directions) 
+            return caminho
 
         filhoList = problem.getSuccessors(raiz)
 
         for filho in filhoList:
             if filho[0] in visitado: continue
 
-            retorno = dfsProblemSolver(problem, filho[0], visitado)
+            retorno = dfsProblemSolver(problem, filho[0], visitado, filho[1])
 
             if retorno is not None:
-                caminho.append(retorno)
+                for i in retorno:
+                    caminho.append(i)
                 return caminho
 
         return None
 
-    return dfsProblemSolver(problem, raiz, visitado, None)
+    retorno = dfsProblemSolver(problem, raiz, visitado, None)
+    
+    for x, i in enumerate(retorno):
+        if i == 'North':
+            retorno[x] = n
+        elif i == 'West':
+            retorno[x] = w
+        elif i == 'East':
+            retorno[x] = e
+        else:
+            retorno[x] = s
+
+    return retorno
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
