@@ -128,24 +128,56 @@ def breadthFirstSearch(problem):
     pre = []
     cor = []
     distancia = []
-
     fila = []
+    translate = []
+    visitado = []
+    goal = (0,0)
 
     def bfsProblemSolver(problem, raiz):
         fila.append(raiz)
         cor.append((raiz, 'b'))
         distancia.append((raiz, 0))
         pre.append((raiz, None))
-
-        print cor
+        visitado.append(raiz)
 
         while fila:
             atual = fila.pop(0)
+
             for n, i in enumerate(cor):
                 if cor[n][0] == atual:
                     cor[n] = (raiz, 'c')
+                    counter = distancia[n][1]
 
-    bfsProblemSolver(problem, raiz)
+            filhoList = problem.getSuccessors(atual)
+            
+            for filhos in filhoList:
+                if filhos[0] in visitado: continue
+                if problem.isGoalState(filhos[0]): goal = filhos[0]
+                fila.append(filhos[0])
+                cor.append((filhos[0], 'b'))
+                distancia.append((filhos[0], filhos[2] + counter))
+                pre.append((filhos[0], atual))
+                translate.append((filhos[0], filhos[1]))
+                visitado.append(filhos[0])
+
+            for n, i in enumerate(cor):
+                if cor[n][0] == atual:
+                    cor[n] = (raiz, 'p')
+
+        retorno = []
+
+        while goal is not problem.getStartState():
+            for n, i in enumerate(translate):
+                if translate[n][0] == goal:
+                    retorno.insert(0, translate[n][1])
+
+            for n, i in enumerate(pre):
+                if pre[n][0] == goal:
+                    goal = pre[n][1]
+
+        return retorno
+
+    return bfsProblemSolver(problem, raiz)
 
 def iterativeDeepeningSearch(problem):
     """
