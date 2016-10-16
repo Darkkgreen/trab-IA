@@ -118,7 +118,8 @@ def depthFirstSearch(problem):
 
         return None
 
-    return dfsProblemSolver(problem, raiz, visitado, None)
+    print dfsProblemSolver(problem, raiz, visitado, None)
+    return None
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -149,7 +150,7 @@ def breadthFirstSearch(problem):
                     counter = distancia[n][1]
 
             filhoList = problem.getSuccessors(atual)
-            
+
             for filhos in filhoList:
                 if filhos[0] in visitado: continue
                 if problem.isGoalState(filhos[0]): goal = filhos[0]
@@ -189,7 +190,43 @@ def iterativeDeepeningSearch(problem):
     goal. Make sure to implement a graph search algorithm.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    depth = 0
+    queue = []
+    global solved
+    solved = False
+    visited_vertex = []
+
+    def ids__(node, actualDepth):
+        caminho = []
+        if node[1] is not "begin":
+            caminho.append(node[1])
+        visited_vertex.append(node[0])
+        returned_list = []
+
+        global solved
+        if actualDepth == depth:
+            if problem.isGoalState(node[0]):
+                print("ACHEI ESSA DELICIA")
+                solved = True
+            return caminho
+        else:
+            for son in problem.getSuccessors(node[0]):
+                if son[0] in visited_vertex:
+                    continue
+
+                returned_list = ids__(son, actualDepth + 1)
+                if(solved == True):
+                    break
+            return caminho + returned_list
+
+    while solved == False:
+        cost_vertex = []
+        visited_vertex = []
+        returned = ids__([problem.getStartState(),'begin',0], 0)
+        depth+=1
+        print returned
+    return returned
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
