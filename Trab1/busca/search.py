@@ -152,7 +152,9 @@ def breadthFirstSearch(problem):
 
             for filhos in filhoList:
                 if filhos[0] in visitado: continue
-                if problem.isGoalState(filhos[0]): goal = filhos[0]
+                if problem.isGoalState(filhos[0]): 
+                    goal = filhos[0]
+
                 fila.append(filhos[0])
                 cor.append((filhos[0], 'b'))
                 distancia.append((filhos[0], filhos[2] + counter))
