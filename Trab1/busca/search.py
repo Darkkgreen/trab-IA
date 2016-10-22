@@ -195,36 +195,52 @@ def iterativeDeepeningSearch(problem):
     depth = 0
     queue = []
     global solved
+    global cost
     solved = False
+    global visited_vertex
     visited_vertex = []
 
     def ids__(node, actualDepth):
+        global visited_vertex
+        global cost
+        global solved
+
+        caminho = []
         if node[1] is not "begin":
             caminho.append(node[1])
-        visited_vertex.append(node[0].append(actualDepth))
+            cost.append(actualDepth)
+        visited_vertex.append(node[0])
         returned_list = []
 
-        global solved
         if actualDepth == depth:
             if problem.isGoalState(node[0]):
                 solved = True
             return caminho
         else:
             for son in problem.getSuccessors(node[0]):
-                if son[0] in visited_vertex:
-                    continue
+                try:
+                    if actualDepth > cost[visited_vertex.index(son[0])]:
+                        return None
+                    else:
+                        continue
+                except:
+                    pass
 
                 returned_list = ids__(son, actualDepth + 1)
                 if(solved == True):
                     break
-            return caminho + returned_list
+            if returned_list == None:
+                return caminho
+            else:
+                return caminho + returned_list
 
     while solved == False:
-        cost_vertex = []
+        cost = []
         visited_vertex = []
         returned = ids__([problem.getStartState(),'begin',0], 0)
-        depth+=1
         print returned
+        depth+=1
+        print depth
     return returned
 
 def uniformCostSearch(problem):
