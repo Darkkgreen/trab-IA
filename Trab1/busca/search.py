@@ -198,21 +198,21 @@ def iterativeDeepeningSearch(problem):
     visited_vertex = []
 
     def ids__(node, actualDepth):
-        caminho = []
         if node[1] is not "begin":
             caminho.append(node[1])
-        visited_vertex.append(node[0])
+        visited_vertex.append(node[0].append(actualDepth))
         returned_list = []
 
         global solved
         if actualDepth == depth:
             if problem.isGoalState(node[0]):
-                print("ACHEI ESSA DELICIA")
                 solved = True
             return caminho
         else:
             for son in problem.getSuccessors(node[0]):
                 if son[0] in visited_vertex:
+                    #se o nó nãof oi visitado
+                    #cê o visitado ja tem um custo maiorkk
                     continue
 
                 returned_list = ids__(son, actualDepth + 1)
