@@ -118,8 +118,7 @@ def depthFirstSearch(problem):
 
         return None
 
-    print dfsProblemSolver(problem, raiz, visitado, None)
-    return None
+    return dfsProblemSolver(problem, raiz, visitado, None)
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -211,8 +210,6 @@ def iterativeDeepeningSearch(problem):
         else:
             for son in problem.getSuccessors(node[0]):
                 if son[0] in visited_vertex:
-                    #se o nó nãof oi visitado
-                    #cê o visitado ja tem um custo maiorkk
                     continue
 
                 returned_list = ids__(son, actualDepth + 1)
