@@ -131,16 +131,19 @@ def breadthFirstSearch(problem):
     fila = []
     translate = []
     visitado = []
-    goal = (0,0)
+    global solutions
+    solutions = 0
 
     def bfsProblemSolver(problem, raiz):
+        global solutions
         fila.append(raiz)
         cor.append((raiz, 'b'))
         distancia.append((raiz, 0))
         pre.append((raiz, None))
         visitado.append(raiz)
+        solved = False
 
-        while fila:
+        while fila and not solved:
             atual = fila.pop(0)
 
             for n, i in enumerate(cor):
@@ -152,8 +155,13 @@ def breadthFirstSearch(problem):
 
             for filhos in filhoList:
                 if filhos[0] in visitado: continue
-                if problem.isGoalState(filhos[0]): 
+                if problem.isGoalState(filhos[0]):
+                    print "ACHEI!"
+                    print filhos[0]
+                    time.sleep(5)
                     goal = filhos[0]
+                    solutions+=1
+                    solved = True
 
                 fila.append(filhos[0])
                 cor.append((filhos[0], 'b'))
@@ -161,7 +169,6 @@ def breadthFirstSearch(problem):
                 pre.append((filhos[0], atual))
                 translate.append((filhos[0], filhos[1]))
                 visitado.append(filhos[0])
-
             for n, i in enumerate(cor):
                 if cor[n][0] == atual:
                     cor[n] = (raiz, 'p')
@@ -179,7 +186,12 @@ def breadthFirstSearch(problem):
 
         return retorno
 
-    return bfsProblemSolver(problem, raiz)
+    path = []
+    while solutions < 4:
+        path+= bfsProblemSolver(problem,raiz)
+
+
+    return path
 
 def iterativeDeepeningSearch(problem):
     """
