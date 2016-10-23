@@ -306,10 +306,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     global solutions
     solutions = root[1]
+    flag = False
 
     if not isinstance(solutions, int):
         solutions = root[1]
         root = root[0]
+        flag = True
     else:
         solutions = [(1,1)]
 
@@ -341,7 +343,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     while solutions:
         path_aux = astar(root)
         root = path_aux[1]
-        solutions.remove(root)
+        if flag == False:
+            solutions.remove(root)
         path = path + path_aux[0]
     return path
 
