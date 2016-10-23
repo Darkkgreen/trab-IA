@@ -118,27 +118,29 @@ def depthFirstSearch(problem):
 
         return None
 
-    return dfsProblemSolver(problem, raiz, visitado, None)
+    retorno = dfsProblemSolver(problem, raiz, visitado, None)
+    retorno.pop(-1)
+    return retorno
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
-    raiz = problem.getStartState()
-    pre = []
-    cor = []
-    distancia = []
-    fila = []
-    translate = []
-    visitado = []
-    goal = (0,0)
-
     def bfsProblemSolver(problem, raiz):
+        global solutions
+        pre = []
+        cor = []
+        distancia = []
+        fila = []
+        translate = []
+        visitado = []
+
         fila.append(raiz)
         cor.append((raiz, 'b'))
         distancia.append((raiz, 0))
         pre.append((raiz, None))
         visitado.append(raiz)
+        solved = False
 
         while fila:
             atual = fila.pop(0)
@@ -152,23 +154,26 @@ def breadthFirstSearch(problem):
 
             for filhos in filhoList:
                 if filhos[0] in visitado: continue
-                if problem.isGoalState(filhos[0]): 
+                if problem.isGoalState(filhos[0]):
                     goal = filhos[0]
+                    goal_aux = filhos[0]
+                    solutions.pop()
+                    solved = True
 
-                fila.append(filhos[0])
+                if solved != True:
+                    fila.append(filhos[0])
                 cor.append((filhos[0], 'b'))
                 distancia.append((filhos[0], filhos[2] + counter))
                 pre.append((filhos[0], atual))
                 translate.append((filhos[0], filhos[1]))
                 visitado.append(filhos[0])
-
             for n, i in enumerate(cor):
                 if cor[n][0] == atual:
                     cor[n] = (raiz, 'p')
 
         retorno = []
 
-        while goal is not problem.getStartState():
+        while goal is not raiz:
             for n, i in enumerate(translate):
                 if translate[n][0] == goal:
                     retorno.insert(0, translate[n][1])
@@ -177,9 +182,28 @@ def breadthFirstSearch(problem):
                 if pre[n][0] == goal:
                     goal = pre[n][1]
 
-        return retorno
+        return retorno, goal_aux
 
-    return bfsProblemSolver(problem, raiz)
+    global solutions
+    aux = problem.getStartState()
+    raiz = aux[0]
+    try:
+        solutions = aux[1]
+    except:
+        solutions = [(1,1)]
+
+    if isinstance(raiz, int):
+        raiz = aux
+        solutions = [(1,1)]
+    else:
+        solutions = list(solutions)
+    path_aux = []
+
+    while solutions:
+        path, raiz = bfsProblemSolver(problem,raiz)
+        path_aux = path_aux + path
+
+    return path_aux
 
 def iterativeDeepeningSearch(problem):
     """
@@ -238,9 +262,7 @@ def iterativeDeepeningSearch(problem):
         cost = []
         visited_vertex = []
         returned = ids__([problem.getStartState(),'begin',0], 0)
-        print returned
         depth+=1
-        print depth
     return returned
 
 def uniformCostSearch(problem):
@@ -280,29 +302,57 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    queue = util.PriorityQueue()
-    visited = []
     root = problem.getStartState()
-    # root vertex, path, cost
-    queue.push((problem.getStartState(),[]),0)
-    actions = []
-    alt = []
 
-    while queue:
+    global solutions
+    try:
+        solutions = root[1]
+    except:
+        solutions = [(1,1)]
+        pass
+
+    flag = False
+
+    if not isinstance(solutions, int):
+        solutions = root[1]
+        root = root[0]
+        flag = True
+    else:
+        solutions = [(1,1)]
+
+    def astar(root):
         actions = []
-        vertex = queue.pop()
-        visited.append(vertex[0])
-        actions.append(vertex[1])
+        alt = []
+        visited = []
 
-        if problem.isGoalState(vertex[0]):
-            return actions[0]
+        queue = util.PriorityQueue()
+        queue.push((root,[]),0)
 
-        for son in problem.getSuccessors(vertex[0]):
-            if not son[0] in visited:
-                alt = actions[0] + [son[1]]
-                queue.push((son[0],alt), problem.getCostOfActions(alt) + heuristic(son[0], problem))
+        while queue:
+            actions = []
+            vertex = queue.pop()
+            visited.append(vertex[0])
+            actions.append(vertex[1])
 
-    return []
+            if problem.isGoalState(vertex[0]):
+                return actions[0], vertex[0]
+
+            for son in problem.getSuccessors(vertex[0]):
+                if not son[0] in visited:
+                    alt = actions[0] + [son[1]]
+                    queue.push((son[0],alt), problem.getCostOfActions(alt) + heuristic(son[0], problem))
+
+        return []
+
+    path = []
+    while solutions:
+        path_aux = astar(root)
+        root = path_aux[1]
+        if flag == False:
+            solutions.remove(root)
+        path = path + path_aux[0]
+    return path
+
 
 
 # Abbreviations
