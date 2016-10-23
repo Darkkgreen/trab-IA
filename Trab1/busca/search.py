@@ -139,6 +139,7 @@ def breadthFirstSearch(problem):
         pre.append((raiz, None))
         visitado.append(raiz)
         solved = False
+        print solutions
 
         while fila and not solved:
             atual = fila.pop(0)
@@ -149,6 +150,7 @@ def breadthFirstSearch(problem):
                     counter = distancia[n][1]
 
             filhoList = problem.getSuccessors(atual)
+            print filhoList
 
             for filhos in filhoList:
                 if filhos[0] in visitado: continue
@@ -182,8 +184,18 @@ def breadthFirstSearch(problem):
         return retorno, goal_aux
 
     global solutions
-    raiz,solutions = problem.getStartState()
-    solutions = list(solutions)
+    aux = problem.getStartState()
+    raiz = aux[0]
+    solutions = aux[1]
+
+    if isinstance(raiz, int):
+        raiz = aux
+        solutions = [(1,1)]
+        print solutions
+        print raiz
+    else:
+        solutions = list(solutions)
+        print solutions
     path_aux = []
 
     while solutions:
