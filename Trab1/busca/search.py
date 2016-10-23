@@ -142,7 +142,6 @@ def breadthFirstSearch(problem):
         visitado.append(raiz)
         solved = False
 
-        #while fila and not solved:
         while fila:
             atual = fila.pop(0)
 
@@ -161,7 +160,8 @@ def breadthFirstSearch(problem):
                     solutions.pop()
                     solved = True
 
-                fila.append(filhos[0])
+                if solved != True:
+                    fila.append(filhos[0])
                 cor.append((filhos[0], 'b'))
                 distancia.append((filhos[0], filhos[2] + counter))
                 pre.append((filhos[0], atual))
