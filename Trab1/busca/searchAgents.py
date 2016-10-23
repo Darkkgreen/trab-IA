@@ -326,7 +326,8 @@ class CornersProblem(search.SearchProblem):
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             x,y = state
             dx, dy = Actions.directionToVector(action)
-            nextx, nexty = int(x + dx), int(y + dy)
+            nexty = int(y+dy)
+            nextx = int(x + dx)
             if not self.walls[nextx][nexty]:
                 nextState = (nextx, nexty)
                 cost = 1
