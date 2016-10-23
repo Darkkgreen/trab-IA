@@ -124,18 +124,15 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
-    raiz = problem.getStartState()
-    pre = []
-    cor = []
-    distancia = []
-    fila = []
-    translate = []
-    visitado = []
-    global solutions
-    solutions = 0
-
     def bfsProblemSolver(problem, raiz):
         global solutions
+        pre = []
+        cor = []
+        distancia = []
+        fila = []
+        translate = []
+        visitado = []
+
         fila.append(raiz)
         cor.append((raiz, 'b'))
         distancia.append((raiz, 0))
@@ -155,13 +152,11 @@ def breadthFirstSearch(problem):
 
             for filhos in filhoList:
                 if filhos[0] in visitado: continue
-                if problem.isGoalState(filhos[0]):
-                    print "ACHEI!"
-                    print filhos[0]
-                    time.sleep(5)
+                if filhos[0] in solutions:
                     goal = filhos[0]
-                    solutions+=1
+                    goal_aux = filhos[0]
                     solved = True
+                    solutions.remove(filhos[0])
 
                 fila.append(filhos[0])
                 cor.append((filhos[0], 'b'))
@@ -175,7 +170,7 @@ def breadthFirstSearch(problem):
 
         retorno = []
 
-        while goal is not problem.getStartState():
+        while goal is not raiz:
             for n, i in enumerate(translate):
                 if translate[n][0] == goal:
                     retorno.insert(0, translate[n][1])
@@ -184,14 +179,18 @@ def breadthFirstSearch(problem):
                 if pre[n][0] == goal:
                     goal = pre[n][1]
 
-        return retorno
+        return retorno, goal_aux
 
-    path = []
-    while solutions < 4:
-        path+= bfsProblemSolver(problem,raiz)
+    global solutions
+    raiz,solutions = problem.getStartState()
+    solutions = list(solutions)
+    path_aux = []
 
+    while solutions:
+        path, raiz = bfsProblemSolver(problem,raiz)
+        path_aux = path_aux + path
 
-    return path
+    return path_aux
 
 def iterativeDeepeningSearch(problem):
     """
@@ -250,9 +249,7 @@ def iterativeDeepeningSearch(problem):
         cost = []
         visited_vertex = []
         returned = ids__([problem.getStartState(),'begin',0], 0)
-        print returned
         depth+=1
-        print depth
     return returned
 
 def uniformCostSearch(problem):

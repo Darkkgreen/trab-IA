@@ -298,7 +298,7 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         #return self.startingPosition,
-        return self.startingPosition
+        return (self.startingPosition, self.corners)
 
     def isGoalState(self, state):
         """
@@ -306,10 +306,9 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         if state in self.corners:
-            self.solutions +=1
-            if self.solutions > 3:
-                self.is_solved = True
-        return self.is_solved
+            return True
+        else:
+            return False
 
     def getSuccessors(self, state):
         """
