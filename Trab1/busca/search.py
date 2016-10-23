@@ -305,7 +305,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     root = problem.getStartState()
 
     global solutions
-    solutions = root[1]
+    try:
+        solutions = root[1]
+    except:
+        solutions = [(1,1)]
+        pass
+
     flag = False
 
     if not isinstance(solutions, int):

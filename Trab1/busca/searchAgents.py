@@ -378,8 +378,6 @@ def cornersHeuristic(state, problem):
             menor = meta
             distancia = temp
 
-    print distancia
-    time.sleep(2)
     return distancia # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
