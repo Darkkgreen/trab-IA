@@ -118,7 +118,9 @@ def depthFirstSearch(problem):
 
         return None
 
-    return dfsProblemSolver(problem, raiz, visitado, None)
+    retorno = dfsProblemSolver(problem, raiz, visitado, None)
+    retorno.pop(-1)
+    return retorno
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -139,9 +141,9 @@ def breadthFirstSearch(problem):
         pre.append((raiz, None))
         visitado.append(raiz)
         solved = False
-        print solutions
 
-        while fila and not solved:
+        #while fila and not solved:
+        while fila:
             atual = fila.pop(0)
 
             for n, i in enumerate(cor):
@@ -150,15 +152,14 @@ def breadthFirstSearch(problem):
                     counter = distancia[n][1]
 
             filhoList = problem.getSuccessors(atual)
-            print filhoList
 
             for filhos in filhoList:
                 if filhos[0] in visitado: continue
-                if filhos[0] in solutions:
+                if problem.isGoalState(filhos[0]):
                     goal = filhos[0]
                     goal_aux = filhos[0]
+                    solutions.pop()
                     solved = True
-                    solutions.remove(filhos[0])
 
                 fila.append(filhos[0])
                 cor.append((filhos[0], 'b'))
@@ -186,16 +187,16 @@ def breadthFirstSearch(problem):
     global solutions
     aux = problem.getStartState()
     raiz = aux[0]
-    solutions = aux[1]
+    try:
+        solutions = aux[1]
+    except:
+        solutions = [(1,1)]
 
     if isinstance(raiz, int):
         raiz = aux
         solutions = [(1,1)]
-        print solutions
-        print raiz
     else:
         solutions = list(solutions)
-        print solutions
     path_aux = []
 
     while solutions:
