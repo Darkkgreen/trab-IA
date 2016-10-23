@@ -369,10 +369,10 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     raiz = state[0]
     visitados = state[1]
-    
+
     naoVisitados = []
-    if meta in corners
-        if not meta in visitados
+    if meta in corners:
+        if not meta in visitados:
             naoVisitados.append(meta)
 
     atual = raiz
@@ -381,7 +381,7 @@ def cornersHeuristic(state, problem):
     while len(naoVisitados) > 0:
         for meta in naoVisitados:
             temp = util.manhattanDistance(atual, meta)
-            if distancia == None or distancia > temp
+            if distancia == None or distancia > temp:
                 menor = meta
                 distancia = temp
 

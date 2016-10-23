@@ -302,29 +302,49 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    queue = util.PriorityQueue()
-    visited = []
     root = problem.getStartState()
-    # root vertex, path, cost
-    queue.push((problem.getStartState(),[]),0)
-    actions = []
-    alt = []
 
-    while queue:
+    global solutions
+    solutions = root[1]
+
+    if not isinstance(solutions, int):
+        solutions = root[1]
+        root = root[0]
+    else:
+        solutions = [(1,1)]
+
+    def astar(root):
         actions = []
-        vertex = queue.pop()
-        visited.append(vertex[0])
-        actions.append(vertex[1])
+        alt = []
+        visited = []
 
-        if problem.isGoalState(vertex[0]):
-            return actions[0]
+        queue = util.PriorityQueue()
+        queue.push((root,[]),0)
 
-        for son in problem.getSuccessors(vertex[0]):
-            if not son[0] in visited:
-                alt = actions[0] + [son[1]]
-                queue.push((son[0],alt), problem.getCostOfActions(alt) + heuristic(son[0], problem))
+        while queue:
+            actions = []
+            vertex = queue.pop()
+            visited.append(vertex[0])
+            actions.append(vertex[1])
 
-    return []
+            if problem.isGoalState(vertex[0]):
+                return actions[0], vertex[0]
+
+            for son in problem.getSuccessors(vertex[0]):
+                if not son[0] in visited:
+                    alt = actions[0] + [son[1]]
+                    queue.push((son[0],alt), problem.getCostOfActions(alt) + heuristic(son[0], problem))
+
+        return []
+
+    path = []
+    while solutions:
+        path_aux = astar(root)
+        root = path_aux[1]
+        solutions.remove(root)
+        path = path + path_aux[0]
+    return path
+
 
 
 # Abbreviations
