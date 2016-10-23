@@ -369,6 +369,7 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     raiz = state[0]
     visitados = state[1]
+    meta = None
 
     naoVisitados = []
     if meta in corners:
@@ -384,8 +385,6 @@ def cornersHeuristic(state, problem):
             if distancia == None or distancia > temp:
                 menor = meta
                 distancia = temp
-
-        naoVisitados.remove(menor)
 
     return distancia # Default to trivial solution
 
