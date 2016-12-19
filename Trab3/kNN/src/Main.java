@@ -6,7 +6,7 @@ import java.util.*;
  * Created by Charizard on 12/17/2016.
  */
 public class Main {
-    private static int k_value = 15;
+    private static int k_value = 5;
 
     public static void main( String []args ) {
         Object novo;
@@ -48,6 +48,7 @@ public class Main {
         Hashtable<String, Integer> mapa = new Hashtable<String, Integer>();
 
         Integer auxiliar, maior = 0;
+        Integer total = 0;
         String retorno = "";
 
         while(it.hasNext()){
@@ -68,6 +69,9 @@ public class Main {
             Collections.sort(topK);
         }
 
+        Collections.sort(listaObjs);
+        printList(listaObjs);
+
         for(Object aux: topK){
             if(mapa.containsKey(aux.getClassificacao())){
                 auxiliar = mapa.get(aux.getClassificacao());
@@ -75,7 +79,7 @@ public class Main {
             }else{
                 mapa.put(aux.getClassificacao(), 1);
             }
-            System.out.println(aux.getClassificacao());
+            //System.out.println(aux.getClassificacao());
         }
 
         for(Object aux: topK){
@@ -95,9 +99,8 @@ public class Main {
 
         while(it.hasNext()){
             aux = it.next();
-            System.out.print(aux.getDist() + "( " + aux.getClassificacao() + " ) ");
+            System.out.println(aux.getDist() + "( " + aux.getClassificacao() + " " + aux.retornaValores() + " ) ");
         }
-        System.out.println();
     }
 
     public static ArrayList<Object> recebeTestes() throws FileNotFoundException{

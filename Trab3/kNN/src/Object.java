@@ -54,6 +54,10 @@ public class Object implements Comparable<Object>{
         this.dist = dist;
     }
 
+    public String retornaValores(){
+        return new String("["+this.buyingPrice+","+this.maintPrice+","+this.safety+","+this.doors+","+this.people+","+this.lug_boot+"]");
+    }
+
     Object(int buyingPrice, int maintPrice, int safety, int doors, int people, int lug_boot){
         this.buyingPrice = buyingPrice;
         this.maintPrice = maintPrice;
