@@ -15,11 +15,25 @@ class Node(object):
     def run(self):
         print "Decisao num",num_att
 
+    def create_edges(self):
+        print self.entropy
+        for i in self.entropy:
+            if(self.entropy[i] == 0.0):
+                # entropia == a 0
+                #remoev dados desnecessarios
+                del self.data2[i]
+                self.children[i] = NodeDecision(i)
+            else:
+                # entropia != de 0
+                self.children[i] = id3(self.data2[i], self.entropy[i], ["0","1"])
+
+
     def __init__(self, data, classes, num_att):
         self.data = data
         self.children = {}
         self.classes = classes
         self.attributes = {}
+
         self.num_att = num_att
         self.data2 = {}
 
@@ -31,6 +45,9 @@ class Node(object):
 
     def add_child(self, obj, string):
         self.children[string] = obj
+    def show_childs(self):
+        for i in self.children:
+            self.children.run()
 
     def sumarize_data(self):
         self.total = 0
@@ -58,7 +75,6 @@ class Node(object):
     def entropy(self):
         # i need to identfy these attributes
         attributes = {}
-        vector = [len(self.classes)]
 
         # ISSO DAQUI VAI DAR PAU
         for i in self.data:
@@ -73,25 +89,31 @@ class Node(object):
 
         self.entropy = {}
         for i in self.classes:
-            self.entropy[i] = 0
-            used = 0
-            total  = 0
-            for i2 in attributes[i]:
-                if i2[self.num_att] == i2[len(i2)-1]:
-                    used+= 1
-                    total += 1
-                else:
-                    total += 1
-            aux = used/total
-            print i,":",used,"/",total
-            self.entropy[i] += -(aux) * (math.log(aux)/math.log(2))
-            aux = (total-used)/total
-            if aux != 0:
+            if i in attributes:
+                self.entropy[i] = 0
+                used = 0
+                total  = 0
+                print" EHUEHUAEHUAHUEHUAEHU", i
+                print attributes
+                print" EHUEHUAEHUAHUEHUAEHU"
+                for i2 in attributes[i]:
+                    if i2[self.num_att] == i2[len(i2)-1]:
+                        used+= 1
+                        total += 1
+                    else:
+                        total += 1
+                aux = used/total
+                print i,":",used,"/",total
                 self.entropy[i] += -(aux) * (math.log(aux)/math.log(2))
-            else:
-                self.children[i] = NodeDecision(i)
+                aux = (total-used)/total
+                if aux != 0:
+                    self.entropy[i] += -(aux) * (math.log(aux)/math.log(2))
+               # else:
+                    # removing unecessary data
+                    #self.children[i] = NodeDecision(i)
 
         print "Entropia:", self.entropy
+        print "Data2:", self.data2
 
     def calculate_gain(self):
         attributes = {}
@@ -105,9 +127,10 @@ class Node(object):
 
         aux = 0
         for i in self.classes:
-            aux += self.entropy[i] * (attributes[i]/total)
-            print aux, " ", attributes[i], total, self.entropy[i]
-        print "Ganho: ",self.root_entropy - aux
+            if i in self.entropy:
+                aux += self.entropy[i] * (attributes[i]/total)
+                print aux, " ", attributes[i], total, self.entropy[i]
+        print "Ganho: ", self.root_entropy - aux
         return self.root_entropy - aux
 
 
@@ -134,38 +157,52 @@ def data_init():
             data.append(row)
     return data
 
-def id3(examples, classes):
+def id3(examples, entropy, classes):
+    print "!!!!!!!!!!!!!!!!!!!!!!!!"
+    print examples
+    print "!!!!!!!!!!!!!!!!!!!!!!!!"
     attr = check_data(examples)
     if(len(attr) > 0):
-        # continue the algorithmn
-        root = Node(examples, classes, -1)
-        root.sumarize_data()
-        root.entropy_root()
-
         gain = []
         for i in range(0, len(examples[0])-1 ):
             aux = Node(examples, classes, i)
             aux.sumarize_data()
+            print "EHUHEUH", entropy
+            aux.set_root_entropy(entropy)
             aux.entropy()
-            aux.set_root_entropy(root.get_entropy())
             gain.append([aux.calculate_gain(),aux])
         print gain
         gain = sorted(gain, key = lambda x: (x[0], x[1]))
+        print "ESCOLHI ESSE DAQUI:", gain[len(gain)-1][0]
         gain = gain[len(gain)-1][1]
-        root.add_child(gain, gain.get_decision)
-        root = gain
+        #root.add_child(gain, gain.get_decision)
+        #root = gain
+
+        gain.create_edges()
 
         print raw_input('What is your name? ')
 
     else:
         print "devo retornar uma esoclha aqui"
 
-    return root_root
+    return gain
 
 
 def main():
     data = data_init()
-    id3(data, ["0", "1"], )
+    root = Node(data, ["0", "1"], -1)
+    root.sumarize_data()
+    root.entropy_root()
+    root.add_child(id3(data, root.get_entropy(),["0", "1"]), "begin")
+    input = raw_input('What is your name? ') 
+    while(input != "0"):
+        root.run()
+        print "1 - Verificar decision"
+        print "heheh"
+        print "heheh"
+        print "heheh"
+        input = raw_input('choose your destiny:') 
+
 
 if __name__ == "__main__":
     main()
