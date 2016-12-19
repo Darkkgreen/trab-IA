@@ -6,7 +6,7 @@ import java.util.*;
  * Created by Charizard on 12/17/2016.
  */
 public class Main {
-    private static int k_value = 3;
+    private static int k_value = 15;
 
     public static void main( String []args ) {
         Object novo;
@@ -35,7 +35,7 @@ public class Main {
             System.out.println("Classified as " + saida);
 
             listaObjetos.add(novo);
-            saida = null;
+            saida = "";
             novo = null;
             entryObj = null;
             entrada = "-";
@@ -43,40 +43,39 @@ public class Main {
     }
 
     public static String classifica(Object novo, ArrayList<Object> listaObjs){
-        TreeSet<Object> topK = new TreeSet<>();
+        ArrayList<Object> topK = new ArrayList<>();
         Iterator<Object> it = listaObjs.iterator();
         Hashtable<String, Integer> mapa = new Hashtable<String, Integer>();
+
         Integer auxiliar, maior = 0;
-        String retorno = null;
+        String retorno = "";
 
         while(it.hasNext()){
             Object aux = it.next();
-            novo.calcDist(aux);
-            aux.setDist(novo.getDist());
+            aux.setDist(novo.calcDist(aux));
 
             if(topK.size() < k_value){
                 topK.add(aux);
-            }else if(topK.size() == k_value){
-                System.out.println("Dist: " + aux.getDist() + " | Class: " + aux.getClassificacao());
-                System.out.println("Dist: " + topK.higher(aux).getDist()  + " | Class: " + topK.higher(aux).getClassificacao());
-                System.out.println("------------------------------------------");
-                if(topK.higher(aux) != null){
-                    printTree(topK);
-                    topK.remove(topK.last());
+            }else{
+                //printList(topK);
+                if(topK.get(topK.size()-1).getDist() > aux.getDist()){
+                    topK.remove(topK.size()-1);
                     topK.add(aux);
-                    printTree(topK);
                 }
+                //printList(topK);
             }
+
+            Collections.sort(topK);
         }
 
         for(Object aux: topK){
-            if(mapa.contains(aux.getClassificacao())){
+            if(mapa.containsKey(aux.getClassificacao())){
                 auxiliar = mapa.get(aux.getClassificacao());
                 mapa.put(aux.getClassificacao(), auxiliar+1);
             }else{
                 mapa.put(aux.getClassificacao(), 1);
-                System.out.println(aux.getClassificacao());
             }
+            System.out.println(aux.getClassificacao());
         }
 
         for(Object aux: topK){
@@ -90,12 +89,15 @@ public class Main {
         return retorno;
     }
 
-    public static void printTree(TreeSet<Object> tree){
+    public static void printList(ArrayList<Object> tree){
         Iterator<Object> it = tree.iterator();
+        Object aux;
 
         while(it.hasNext()){
-            System.out.println(it.next().getDist());
+            aux = it.next();
+            System.out.print(aux.getDist() + "( " + aux.getClassificacao() + " ) ");
         }
+        System.out.println();
     }
 
     public static ArrayList<Object> recebeTestes() throws FileNotFoundException{
@@ -111,9 +113,9 @@ public class Main {
             element = reader.nextLine().split(",");
             novo = new Object(treatPrice(element[0]), treatPrice(element[1]), treatDoors(element[2]), treatPeople(element[3]), treatLug(element[4]), treatSafety(element[5]), element[6]);
             listaObjetos.add(novo);
-            novo = null;
         }
 
+        System.out.println("Lines read: " + listaObjetos.size());
         System.out.println("Done loading archive!");
 
         return listaObjetos;
