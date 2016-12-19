@@ -49,6 +49,11 @@ public class Object implements Comparable<Object>{
         return dist;
     }
 
+    public void setDist(double dist)
+    {
+        this.dist = dist;
+    }
+
     Object(int buyingPrice, int maintPrice, int safety, int doors, int people, int lug_boot){
         this.buyingPrice = buyingPrice;
         this.maintPrice = maintPrice;

@@ -1,23 +1,20 @@
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by Charizard on 12/17/2016.
  */
 public class Main {
-    private int k_value = 5;
+    private static int k_value = 5;
 
-    public void main( String []args ) {
+    public static void main( String []args ) {
         Object novo;
         ArrayList<Object> listaObjetos = null;
         Scanner scan = new Scanner(System.in);
         String entrada = "-";
         String[] entryObj;
         String saida = null;
-
 
         try{
             listaObjetos = recebeTestes();
@@ -30,27 +27,66 @@ public class Main {
             entryObj = entrada.split(",");
             novo = new Object(treatPrice(entryObj[0]), treatPrice(entryObj[1]), treatDoors(entryObj[2]), treatPeople(entryObj[3]), treatLug(entryObj[4]), treatSafety(entryObj[5]));
 
-            //aqui precisa chamar o tratador, receber o resultado e remover as variáveis (além de adicionar o objeto à nova lista)
             saida = classifica(novo, listaObjetos);
             novo.setClassificacao(saida);
+
+            System.out.println(saida);
+
+            listaObjetos.add(novo);
+            saida = null;
+            novo = null;
+            entryObj = null;
+            entrada = "-";
         }
     }
 
-    public String classifica(Object novo, ArrayList<Object> listaObjs){
-        TreeSet<Object> topK;
+    public static String classifica(Object novo, ArrayList<Object> listaObjs){
+        TreeSet<Object> topK = new TreeSet<>();
+        Iterator<Object> it = listaObjs.iterator();
+        Hashtable<String, Integer> mapa = new Hashtable<String, Integer>();
+        Integer auxiliar, maior = 0;
+        String retorno = null;
 
-        //precisa saber o tamanho máximo de K
-        //ir atualizando o TreeSet e fazendo as devidas comparações
-        //ao final da análise, verificar o treeSet e categorizar a nova inserção
+        while(it.hasNext()){
+            Object aux = it.next();
+            novo.calcDist(aux);
+            aux.setDist(novo.getDist());
 
-        return "alalalal";
+            if(topK.size() < k_value){
+                topK.add(aux);
+            }else if(topK.size() == k_value){
+                if(topK.higher(aux) != null){
+                    topK.remove(topK.last());
+                    topK.add(aux);
+                }
+            }
+        }
+
+        for(Object aux: topK){
+            if(mapa.contains(aux.getClassificacao())){
+                auxiliar = mapa.get(aux.getClassificacao());
+                mapa.put(aux.getClassificacao(), auxiliar+1);
+            }else{
+                mapa.put(aux.getClassificacao(), 1);
+            }
+        }
+
+        for(Object aux: topK){
+            auxiliar = mapa.get(aux.getClassificacao());
+            if(auxiliar > maior){
+                maior = auxiliar;
+                retorno = aux.getClassificacao();
+            }
+        }
+
+        return retorno;
     }
 
-    public ArrayList<Object> recebeTestes() throws FileNotFoundException{
+    public static ArrayList<Object> recebeTestes() throws FileNotFoundException{
         ArrayList<Object> listaObjetos = new ArrayList<Object>();
         Object novo = null;
 
-        FileInputStream fis = new FileInputStream("arquivo vem aqui");
+        FileInputStream fis = new FileInputStream("C:\\Users\\Charizard\\IdeaProjects\\kNN\\src\\teste.txt");
         Scanner reader = new Scanner(fis);
 
         String[] element;
@@ -65,8 +101,8 @@ public class Main {
         return listaObjetos;
     }
 
-    public int treatPrice(String value){
-        if(value.equals("v-high")){
+    public static int treatPrice(String value){
+        if(value.equals("vhigh")){
             return 1;
         }else if(value.equals("high")){
             return 2;
@@ -78,21 +114,21 @@ public class Main {
             return Integer.parseInt(value);
     }
 
-    public int treatDoors(String value){
-        if(value.equals("5-more")){
+    public static int treatDoors(String value){
+        if(value.equals("5more")){
             return 5;
         }else
             return Integer.parseInt(value);
     }
 
-    public int treatPeople(String value){
+    public static int treatPeople(String value){
         if(value.equals("more")){
             return 5;
         }else
             return Integer.parseInt(value);
     }
 
-    public int treatLug(String value) {
+    public static int treatLug(String value) {
         if (value.equals("small")) {
             return 1;
         } else if (value.equals("med")) {
@@ -104,7 +140,7 @@ public class Main {
         return 0;
     }
 
-    public int treatSafety(String value){
+    public static int treatSafety(String value){
         if (value.equals("low")) {
             return 1;
         } else if (value.equals("med")) {
