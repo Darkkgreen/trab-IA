@@ -6,7 +6,7 @@ import java.util.*;
  * Created by Charizard on 12/17/2016.
  */
 public class Main {
-    private static int k_value = 5;
+    private static int k_value = 3;
 
     public static void main( String []args ) {
         Object novo;
@@ -22,6 +22,8 @@ public class Main {
             System.out.println(e);
         }
 
+        System.out.println("Please insert your info: ");
+
         while(entrada != null){
             entrada = scan.next();
             entryObj = entrada.split(",");
@@ -30,7 +32,7 @@ public class Main {
             saida = classifica(novo, listaObjetos);
             novo.setClassificacao(saida);
 
-            System.out.println(saida);
+            System.out.println("Classified as " + saida);
 
             listaObjetos.add(novo);
             saida = null;
@@ -55,9 +57,14 @@ public class Main {
             if(topK.size() < k_value){
                 topK.add(aux);
             }else if(topK.size() == k_value){
+                System.out.println("Dist: " + aux.getDist() + " | Class: " + aux.getClassificacao());
+                System.out.println("Dist: " + topK.higher(aux).getDist()  + " | Class: " + topK.higher(aux).getClassificacao());
+                System.out.println("------------------------------------------");
                 if(topK.higher(aux) != null){
+                    printTree(topK);
                     topK.remove(topK.last());
                     topK.add(aux);
+                    printTree(topK);
                 }
             }
         }
@@ -68,6 +75,7 @@ public class Main {
                 mapa.put(aux.getClassificacao(), auxiliar+1);
             }else{
                 mapa.put(aux.getClassificacao(), 1);
+                System.out.println(aux.getClassificacao());
             }
         }
 
@@ -80,6 +88,14 @@ public class Main {
         }
 
         return retorno;
+    }
+
+    public static void printTree(TreeSet<Object> tree){
+        Iterator<Object> it = tree.iterator();
+
+        while(it.hasNext()){
+            System.out.println(it.next().getDist());
+        }
     }
 
     public static ArrayList<Object> recebeTestes() throws FileNotFoundException{
@@ -97,6 +113,8 @@ public class Main {
             listaObjetos.add(novo);
             novo = null;
         }
+
+        System.out.println("Done loading archive!");
 
         return listaObjetos;
     }
