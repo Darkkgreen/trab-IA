@@ -1,6 +1,7 @@
 from __future__ import division
 import csv
 import math
+import copy
 
 global _class
 _class = ["negative","positive"]
@@ -141,9 +142,10 @@ class Node(object):
             self.children['begin'].navigation(path)
         else:
             #print self.children
-            input = raw_input('decision? ')
-            self.children[input].navigation(path)
-
+            aux = copy.copy(path)
+            del aux[0]
+            print path 
+            self.children[path[0]].navigation(aux)
 
 def check_data(data):
     num = len(data[0]) -1
@@ -195,9 +197,12 @@ def main():
     root.entropy_root()
     root.add_child(id3(data, root.get_entropy(),_class), "begin")
     input = 1
-    while(input != "0"):
+    input = raw_input('')
+    input = input.split(",")
+    while(input != []):
         root.navigation(input)
-        input = raw_input('Press 0 to exit')
+        input = raw_input('Press 0 to exit: ')
+        input = input.path.split(",")
 
 
 if __name__ == "__main__":
