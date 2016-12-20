@@ -32,15 +32,6 @@ class Node(object):
                 del self.data2[i]
             else:
                 # entropia != de 0
-                #apagar coluna
-                print "---------------------------------------------------------------"
-                print self.data2
-                for i2 in self.data2:
-                    for i3 in self.data2[i2]:
-                        del i3[self.num_att]
-                print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                print self.data2
-                print "---------------------------------------------------------------"
                 self.children[i] = id3(self.data2[i], self.entropy[i], _class)
 
 
@@ -99,7 +90,6 @@ class Node(object):
             else:
                 attributes[i[self.num_att]].append(i)
                 self.data2[i[self.num_att]].append(i)
-            print i
 
         self.entropy = {}
         for i in self.classes:
@@ -114,7 +104,6 @@ class Node(object):
                     else:
                         total += 1
                 aux = used/total
-                print i,used, total
 
                 entropia1 = 0
                 if aux != 0:
@@ -151,9 +140,7 @@ class Node(object):
         if self.num_att == -1:
             self.children['begin'].navigation(path)
         else:
-            print self.children
-            input = raw_input('decision? ')
-            self.children[input].navigation(path)
+            self.children[path[self.num_att]].navigation(path)
 
 
 def check_data(data):
@@ -168,7 +155,7 @@ def check_data(data):
 
 def data_init():
     data = []
-    with open('tic-tac-toe.data2', 'rb') as csvfile:
+    with open('tic.data', 'rb') as csvfile:
         csv_data = csv.reader(csvfile)
         for row in csv_data:
             data.append(row)
@@ -182,16 +169,12 @@ def id3(examples, entropy, classes):
             aux = Node(examples, _class, i)
             aux.set_root_entropy(entropy)
             aux.sumarize_data()
-            print "ENTREI EM :",i,"================================="
             aux.entropy()
             gain.append([aux.calculate_gain(), len(aux.get_entropy()),aux])
-        print "NO PAIN NO GAIN" 
-        print gain
         gain = sorted(gain, key = lambda x: (x[0], x[1]))
         gain = gain[-1][-1]
         #root.add_child(gain, gain.get_decision)
         #root = gain
-
     gain.create_edges()
 
 
@@ -207,10 +190,14 @@ def main():
     root.sumarize_data()
     root.entropy_root()
     root.add_child(id3(data, root.get_entropy(),_class), "begin")
-    input = 1
+    input = raw_input()
+    input = input.split(",")
     while(input != "0"):
         root.navigation(input)
-        input = raw_input('Press 0 to exit')
+        input = raw_input()
+        if(input == "0"):
+            return
+        input = input.split(",")
 
 
 if __name__ == "__main__":
