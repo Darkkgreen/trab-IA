@@ -2,12 +2,16 @@ from __future__ import division
 import csv
 import math
 
+global _class
+_class = ["negative","positive"]
+
 class NodeDecision(object):
     def __init__(self, decision):
         self.decision = decision
 
     def run(self):
-        print "Decisao: ",self.decision
+        #print "Decisao: ",self.decision
+        print self.decision
 
     def navigation(self, path):
         self.run()
@@ -16,7 +20,8 @@ class NodeDecision(object):
 class Node(object):
 
     def run(self):
-        print "Decisao num",self.num_att
+        #print "Decisao num",self.num_att
+        return
 
     def create_edges(self):
         for i in self.entropy:
@@ -27,7 +32,7 @@ class Node(object):
                 del self.data2[i]
             else:
                 # entropia != de 0
-                self.children[i] = id3(self.data2[i], self.entropy[i], ["0","1"])
+                self.children[i] = id3(self.data2[i], self.entropy[i], _class)
 
 
     def __init__(self, data, classes, num_att):
@@ -41,7 +46,7 @@ class Node(object):
         if num_att == -1:
             self.classes = classes
         else:
-            self.classes = ["x","o","b"]
+            self.classes = ["x","b","o"]
     def get_decision(self):
         return num_att
 
@@ -93,7 +98,7 @@ class Node(object):
                 used = 0
                 total  = 0
                 for i2 in attributes[i]:
-                    if i2[len(i2)-1] == "positive":
+                    if i2[len(i2)-1] == _class[1]:
                         used+= 1
                         total += 1
                     else:
@@ -109,7 +114,6 @@ class Node(object):
                 if aux != 0:
                     entropia2 = -(aux) * (math.log(aux)/math.log(2))
                 self.entropy[i] += entropia1 + entropia2
-                print self.entropy[i],i
 
     def calculate_gain(self):
         attributes = {}
@@ -136,7 +140,7 @@ class Node(object):
         if self.num_att == -1:
             self.children['begin'].navigation(path)
         else:
-            print self.children
+            #print self.children
             input = raw_input('decision? ')
             self.children[input].navigation(path)
 
@@ -161,10 +165,11 @@ def data_init():
 
 def id3(examples, entropy, classes):
     attr = check_data(examples)
-    if(len(attr) > 0):
+    if(len(attr) >= 0):
+        print attr
         gain = []
         for i in range(0, len(examples[0])-1 ):
-            aux = Node(examples, "hue", i)
+            aux = Node(examples, _class, i)
             aux.set_root_entropy(entropy)
             aux.sumarize_data()
             aux.entropy()
@@ -177,9 +182,6 @@ def id3(examples, entropy, classes):
         gain.create_edges()
 
 
-    else:
-        print "devo retornar uma esoclha aqui"
-
     return gain
 
 def printM(matrix):
@@ -188,10 +190,10 @@ def printM(matrix):
 
 def main():
     data = data_init()
-    root = Node(data, ["positive", "negative"], -1)
+    root = Node(data, _class, -1)
     root.sumarize_data()
     root.entropy_root()
-    root.add_child(id3(data, root.get_entropy(),["positive", "negative"]), "begin")
+    root.add_child(id3(data, root.get_entropy(),_class), "begin")
     input = 1
     while(input != "0"):
         root.navigation(input)
